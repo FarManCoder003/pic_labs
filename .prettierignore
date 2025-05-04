@@ -1,0 +1,36 @@
+# Node.js dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build output
+dist/
+build/
+tmp/
+cache/
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.*
+
+# Version control
+.git/
+.gitignore
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Database dumps
+*.sql
+*.sqlite
+*.db
+
+# Misc
+coverage/
+public/
+uploads/
+*.pem
