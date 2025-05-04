@@ -4,6 +4,7 @@ import e from 'express';
 import { WHITELIST_DOMAINS } from './constants.js';
 import healthCheck from './controllers/healthCheck.controller.js';
 import errorHandler from './middlewares/errorhandler.middleware.js';
+import userRouter from './routes/user.route.js';
 const app = e();
 app.use(e.json());
 app.use(e.urlencoded({ extended: true }));
@@ -16,5 +17,6 @@ app.use(
 );
 app.use(cookieParser());
 app.use('/api/v1', healthCheck);
+app.use('/api/v1', userRouter);
 app.use(errorHandler);
 export { app };
