@@ -9,4 +9,9 @@ const signupValidationSchema = z.object({
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/),
 });
 
-export { signupValidationSchema };
+const signinValidationSchema = z.object({
+  email: z.string().email(),
+  password: z.string(),
+});
+
+export { signinValidationSchema, signupValidationSchema };

@@ -44,5 +44,23 @@ const verifyEmail = asyncHandler(async (req, res, next) => {
   res.status(200).json(ApiSuccess.success('User verified successfully', user));
 });
 
-export { signup, verifyEmail };
+const signin = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) return next(ApiError.badRequest('Invalid credentials'));
+  const isMatch = await user.comparePassword(password);
+  if (!isMatch) return next(ApiError.badRequest('Invalid credentials'));
+  if (user.emailVerified === false) {
+    return next(ApiError.badRequest('Email not verified'));
+  }
+  const accessToken = user.generateAccessToken();
+  const refreshToken = user.generateRefreshToken();
+  const options = { httpOnly: true, secure: true, samesite: 'lax' };
+  res
+    .status(200)
+    .cookie('accessToken', accessToken, { ...options, maxAge: 24 * 60 * 60 * 1000 })
+    .cookie('refreshToken', refreshToken, { ...options, maxAge: 30 * 24 * 60 * 60 * 1000 })
+    .json(ApiSuccess.success('User signed in successfully', { accessToken, refreshToken }));
+});
 
+export { signin, signup, verifyEmail };
