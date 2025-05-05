@@ -26,8 +26,8 @@ class ApiError extends Error {
   static notFound(message = 'not found', errors = []) {
     return new ApiError(404, message, errors);
   }
-  static customError(statusCode, message, errors = []) {
-    return new ApiError(statusCode, message, errors);
+  static customError(statusCode, message = 'something went wrong', errors = [], stack = '') {
+    return new ApiError(statusCode, message, errors, stack);
   }
 }
 
