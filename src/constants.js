@@ -3,8 +3,9 @@ dotenv.config({
   path: './.env',
 });
 
-const NODE_ENV = process.env.NODE_ENV;
+const NODE_ENV = process.env.NODE_ENV ?? 'development';
 const PORT = process.env.PORT ?? 8000;
+const APP_URL = NODE_ENV === 'production' ? process.env.APP_URL : `http://localhost:${PORT}`;
 const WHITELIST_DOMAINS = process.env.WHITELIST_DOMAINS ?? 'http://localhost:8000';
 const MONGODB_URI = process.env.MONGODB_URI;
 const MAIL_HOST = process.env.MAIL_HOST;
@@ -21,6 +22,7 @@ const VERIFICATION_TOKEN_EXPIRES = process.env.VERIFICATION_TOKEN_EXPIRES;
 export {
   ACCESS_TOKEN_EXPIRES,
   ACCESS_TOKEN_KEY,
+  APP_URL,
   MAIL_HOST,
   MAIL_PASSWORD,
   MAIL_PORT,
@@ -32,5 +34,6 @@ export {
   REFRESH_TOKEN_KEY,
   VERIFICATION_TOKEN_EXPIRES,
   VERIFICATION_TOKEN_KEY,
-  WHITELIST_DOMAINS,
+  WHITELIST_DOMAINS
 };
+

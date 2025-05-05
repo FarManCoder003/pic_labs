@@ -1,6 +1,6 @@
 import Mailgen from 'mailgen';
 import nodemailer from 'nodemailer';
-import { MAIL_HOST, MAIL_PASSWORD, MAIL_PORT, MAIL_USERNAME } from '../constants.js';
+import { MAIL_HOST, MAIL_PASSWORD, MAIL_PORT, MAIL_USERNAME, WHITELIST_DOMAINS } from '../constants.js';
 const sendMail = async (options) => {
   const mailGenerator = new Mailgen({
     theme: 'default',
@@ -38,17 +38,17 @@ const sendMail = async (options) => {
   }
 };
 
-const verificationMail = (token) => {
+const verificationMail = (username, verifyurl) => {
   return {
     body: {
-      name: 'Pic Labs',
+      name: username,
       intro: "Welcome to Pic Labs! We're very excited to have you on board.",
       action: {
         instructions: 'To get started with Pic Labs, please click here:',
         button: {
           color: '#22BC66',
           text: 'Confirm your account',
-          link: `${process.env.WHITELIST_DOMAINS}/api/v1/users/verify/${token}`,
+          link: `${verifyurl}`,
         },
       },
       outro: "Need help, or have questions? Just reply to this email, we'd love to help.",
@@ -66,7 +66,7 @@ const resetPasswordMail = (otp) => {
         button: {
           color: '#22BC66',
           text: 'Reset Password',
-          link: `${process.env.WHITELIST_DOMAINS}/api/v1/users/reset-password/${otp}`,
+          link: `${WHITELIST_DOMAINS}/api/v1/users/reset-password/${otp}`,
         },
       },
       outro: "Need help, or have questions? Just reply to this email, we'd love to help.",
