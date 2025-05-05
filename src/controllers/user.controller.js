@@ -44,7 +44,7 @@ const verifyEmail = asyncHandler(async (req, res, next) => {
   res.status(200).json(ApiSuccess.success('User verified successfully', user));
 });
 
-const signin = asyncHandler(async (req, res) => {
+const signin = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) return next(ApiError.badRequest('Invalid credentials'));
