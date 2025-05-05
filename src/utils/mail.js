@@ -1,12 +1,19 @@
 import Mailgen from 'mailgen';
 import nodemailer from 'nodemailer';
-import { MAIL_HOST, MAIL_PASSWORD, MAIL_PORT, MAIL_USERNAME, WHITELIST_DOMAINS } from '../constants.js';
+import {
+  APP_URL,
+  MAIL_HOST,
+  MAIL_PASSWORD,
+  MAIL_PORT,
+  MAIL_USERNAME,
+  WHITELIST_DOMAINS,
+} from '../constants.js';
 const sendMail = async (options) => {
   const mailGenerator = new Mailgen({
     theme: 'default',
     product: {
       name: 'Pic Labs',
-      link: 'https://mailgen.js/',
+      link: APP_URL,
     },
   });
 
@@ -27,8 +34,8 @@ const sendMail = async (options) => {
       from: '"PIC LABS" <pic_labs@pic_labs>',
       to: options.email,
       subject: options.subject,
-      text: emailBody,
-      html: emailText,
+      text: emailText,
+      html: emailBody,
     });
   }
   try {
