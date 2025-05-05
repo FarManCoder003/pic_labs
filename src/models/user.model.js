@@ -25,6 +25,14 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
+    avatar: {
+      url: {
+        type: String,
+      },
+      public_id: {
+        type: String,
+      },
+    },
     emailVerified: {
       type: Boolean,
       default: false,

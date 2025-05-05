@@ -1,3 +1,4 @@
+import { NODE_ENV } from '../constants.js';
 import ApiError from '../utils/apiError.js';
 
 const errorHandler = (err, req, res, next) => {
@@ -14,6 +15,7 @@ const errorHandler = (err, req, res, next) => {
     statusCode: error.statusCode,
     message: error.message,
     errors: error.errors,
+    ...(NODE_ENV !== 'production' && { stack: error.stack }),
   });
 };
 export default errorHandler;
