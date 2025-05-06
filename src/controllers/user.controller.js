@@ -68,4 +68,9 @@ const signout = asyncHandler(async (req, res) => {
     .json(ApiSuccess.success('User signed out successfully'));
 });
 
-export { getSelf, signin, signout, signup, verifyEmail };
+const deleteSelf = asyncHandler(async (req, res) => {
+  User.findByIdAndDelete(req.user._id);
+  res.status(200).json(ApiSuccess.success('User deleted successfully'));
+});
+
+export { deleteSelf, getSelf, signin, signout, signup, verifyEmail };

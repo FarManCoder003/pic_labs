@@ -53,6 +53,11 @@ const userSchema = new Schema(
     forgotPasswordExpire: {
       type: Date,
     },
+    userStatus: {
+      type: String,
+      enum: ['active', 'inactive'],
+      default: 'active',
+    },
   },
   { timestamps: true }
 );
