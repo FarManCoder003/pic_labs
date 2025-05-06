@@ -67,19 +67,19 @@ userSchema.methods.comparePassword = async function (password) {
 };
 
 userSchema.methods.generateAccessToken = function () {
-  return jwt.sign({ id: this._id, email: this.email }, ACCESS_TOKEN_KEY, {
+  return jwt.sign({ _id: this._id, email: this.email }, ACCESS_TOKEN_KEY, {
     expiresIn: ACCESS_TOKEN_EXPIRES,
   });
 };
 
 userSchema.methods.generateRefreshToken = function () {
-  return jwt.sign({ id: this._id, email: this.email }, REFRESH_TOKEN_KEY, {
+  return jwt.sign({ _id: this._id, email: this.email }, REFRESH_TOKEN_KEY, {
     expiresIn: REFRESH_TOKEN_EXPIRES,
   });
 };
 
 userSchema.methods.generateVerificationToken = function () {
-  return jwt.sign({ id: this._id, email: this.email }, VERIFICATION_TOKEN_KEY, {
+  return jwt.sign({ _id: this._id, email: this.email }, VERIFICATION_TOKEN_KEY, {
     expiresIn: VERIFICATION_TOKEN_EXPIRES,
   });
 };

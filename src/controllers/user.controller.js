@@ -13,7 +13,8 @@ const signup = asyncHandler(async (req, res) => {
   const emailExists = await User.exists({ email: req.body.email });
   if (emailExists) throw ApiError.badRequest('Email already exists');
 
-  const user = await User.create(req.body);
+  const createdUser = await User.create(req.body);
+  const user = await User.findById(createdUser._id).select('-password -__v -createdAt -updatedAt');
   const verifyurl = `${APP_URL}/api/v1/users/verify/?token=${user.generateVerificationToken()}`;
   sendMail({
     email: user.email,
@@ -28,7 +29,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
   if (!token) throw ApiError.badRequest('Invalid token');
   const decodedToken = jwt.verify(token, VERIFICATION_TOKEN_KEY);
   if (!decodedToken) throw ApiError.badRequest('Invalid token');
-  const user = await User.findById(decodedToken.id);
+  const user = await User.findById(decodedToken._id);
   if (!user) throw ApiError.notFound('User not found');
   if (user.emailVerified) throw ApiError.badRequest('User already verified');
   user.emailVerified = true;
@@ -55,4 +56,8 @@ const signin = asyncHandler(async (req, res) => {
     .json(ApiSuccess.success('User signed in successfully', { accessToken, refreshToken }));
 });
 
-export { signin, signup, verifyEmail };
+const getSelf = asyncHandler(async (req, res) => {
+  res.status(200).json(ApiSuccess.success('User fetched successfully', req.user));
+});
+
+export { getSelf, signin, signup, verifyEmail };
