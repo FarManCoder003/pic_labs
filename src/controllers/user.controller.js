@@ -6,12 +6,12 @@ import ApiSuccess from '../utils/apiSuccess.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import { sendMail, verificationMail } from '../utils/mail.js';
 
-const signup = asyncHandler(async (req, res, next) => {
+const signup = asyncHandler(async (req, res) => {
   const usernameExists = await User.exists({ username: req.body.username });
-  if (usernameExists) return next(ApiError.badRequest('Username already exists'));
+  if (usernameExists) throw ApiError.badRequest('Username already exists');
 
   const emailExists = await User.exists({ email: req.body.email });
-  if (emailExists) return next(ApiError.badRequest('Email already exists'));
+  if (emailExists) throw ApiError.badRequest('Email already exists');
 
   const user = await User.create(req.body);
   const verifyurl = `${APP_URL}/api/v1/users/verify/?token=${user.generateVerificationToken()}`;
@@ -23,35 +23,27 @@ const signup = asyncHandler(async (req, res, next) => {
   res.status(201).json(ApiSuccess.success('User created successfully', user));
 });
 
-const verifyEmail = asyncHandler(async (req, res, next) => {
+const verifyEmail = asyncHandler(async (req, res) => {
   const token = req.query.token;
-  if (!token) {
-    return next(ApiError.badRequest('Invalid token'));
-  }
+  if (!token) throw ApiError.badRequest('Invalid token');
   const decodedToken = jwt.verify(token, VERIFICATION_TOKEN_KEY);
-  if (!decodedToken) {
-    return next(ApiError.badRequest('Invalid token'));
-  }
+  if (!decodedToken) throw ApiError.badRequest('Invalid token');
   const user = await User.findById(decodedToken.id);
-  if (!user) {
-    return next(ApiError.notFound('User not found'));
-  }
-  if (user.emailVerified) {
-    return next(ApiError.badRequest('User already verified'));
-  }
+  if (!user) throw ApiError.notFound('User not found');
+  if (user.emailVerified) throw ApiError.badRequest('User already verified');
   user.emailVerified = true;
   await user.save();
   res.status(200).json(ApiSuccess.success('User verified successfully', user));
 });
 
-const signin = asyncHandler(async (req, res, next) => {
+const signin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  if (!user) return next(ApiError.badRequest('Invalid credentials'));
+  if (!user) throw ApiError.badRequest('Invalid credentials');
   const isMatch = await user.comparePassword(password);
-  if (!isMatch) return next(ApiError.badRequest('Invalid credentials'));
+  if (!isMatch) throw ApiError.badRequest('Invalid credentials');
   if (user.emailVerified === false) {
-    return next(ApiError.badRequest('Email not verified'));
+    throw ApiError.badRequest('Email not verified');
   }
   const accessToken = user.generateAccessToken();
   const refreshToken = user.generateRefreshToken();
