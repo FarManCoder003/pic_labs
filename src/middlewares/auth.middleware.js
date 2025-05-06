@@ -5,7 +5,7 @@ import ApiError from '../utils/apiError.js';
 import asyncHandler from '../utils/asyncHandler.js';
 
 const authMiddleware = asyncHandler(async (req, res, next) => {
-  const token = req.cookies.accessToken || req.header('Authorization').replace('Bearer ', '');
+  const token = req.cookies.accessToken || req.header('Authorization')?.replace('Bearer ', '');
   if (!token) {
     throw ApiError.unauthorized('You are not authenticated');
   }

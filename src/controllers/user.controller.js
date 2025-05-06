@@ -60,4 +60,12 @@ const getSelf = asyncHandler(async (req, res) => {
   res.status(200).json(ApiSuccess.success('User fetched successfully', req.user));
 });
 
-export { getSelf, signin, signup, verifyEmail };
+const signout = asyncHandler(async (req, res) => {
+  res
+    .status(200)
+    .clearCookie('accessToken')
+    .clearCookie('refreshToken')
+    .json(ApiSuccess.success('User signed out successfully'));
+});
+
+export { getSelf, signin, signout, signup, verifyEmail };
