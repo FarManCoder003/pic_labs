@@ -15,11 +15,11 @@ const signup = asyncHandler(async (req, res) => {
 
   const createdUser = await User.create(req.body);
   const user = await User.findById(createdUser._id).select('-password -__v -createdAt -updatedAt');
-  const verifyurl = `${APP_URL}/api/v1/users/verify/?token=${user.generateVerificationToken()}`;
+  const verifyUrl = `${APP_URL}/api/v1/users/verify/?token=${user.generateVerificationToken()}`;
   sendMail({
     email: user.email,
     subject: 'Email Verification',
-    mailTemplate: verificationMail(user.username, verifyurl),
+    mailTemplate: verificationMail(user.username, verifyUrl),
   });
   res.status(201).json(ApiSuccess.success('User created successfully', user));
 });

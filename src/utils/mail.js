@@ -45,7 +45,7 @@ const sendMail = async (options) => {
   }
 };
 
-const verificationMail = (username, verifyurl) => {
+const verificationMail = (username, verifyUrl) => {
   return {
     body: {
       name: username,
@@ -55,7 +55,7 @@ const verificationMail = (username, verifyurl) => {
         button: {
           color: '#22BC66',
           text: 'Confirm your account',
-          link: `${verifyurl}`,
+          link: `${verifyUrl}`,
         },
       },
       outro: "Need help, or have questions? Just reply to this email, we'd love to help.",
