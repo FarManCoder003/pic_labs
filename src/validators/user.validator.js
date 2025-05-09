@@ -36,10 +36,17 @@ const resetPasswordValidationSchema = z.object({
     ),
 });
 
+const updateSelfValidationSchema = z.object({
+  name: z.string().min(5).max(20),
+  username: z.string().min(5).max(20),
+  email: z.string().email(),
+});
+
 export {
   forgetPasswordValidationSchema,
   resetPasswordValidationSchema,
   signinValidationSchema,
   signupValidationSchema,
+  updateSelfValidationSchema,
   verifyOtpValidationSchema,
 };

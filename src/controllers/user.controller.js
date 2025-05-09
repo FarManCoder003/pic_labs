@@ -116,6 +116,35 @@ const resetPassword = asyncHandler(async (req, res) => {
   res.status(200).json(ApiSuccess.success('Password reset successfully'));
 });
 
+const updateSelf = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+  const { name, username, email } = req.body;
+  if (username !== user.username) {
+    const usernameExists = await User.findOne({ username });
+    if (usernameExists) throw ApiError.badRequest('Username already exists');
+  } else {
+    user.username = username;
+  }
+  if (email !== user.email) {
+    const emailExists = await User.findOne({ email });
+    if (emailExists) throw ApiError.badRequest('Email already exists');
+    user.email = email;
+    const verifyUrl = `${APP_URL}/api/v1/users/verify/?token=${user.generateVerificationToken()}`;
+    sendMail({
+      email: user.email,
+      subject: 'Email Verification',
+      mailTemplate: verificationMail(user.username, verifyUrl),
+    });
+  } else {
+    user.name = name;
+  }
+  await user.save();
+  const updatedUser = await User.findById(req.user._id).select(
+    '-password -__v -createdAt -updatedAt'
+  );
+  res.status(200).json(ApiSuccess.success('User updated successfully', updatedUser));
+});
+
 export {
   deleteSelf,
   forgetPassword,
@@ -124,6 +153,7 @@ export {
   signin,
   signout,
   signup,
+  updateSelf,
   verifyEmail,
   verifyOtp,
 };

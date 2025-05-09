@@ -7,6 +7,7 @@ import {
   signin,
   signout,
   signup,
+  updateSelf,
   verifyEmail,
   verifyOtp,
 } from '../controllers/user.controller.js';
@@ -17,6 +18,7 @@ import {
   resetPasswordValidationSchema,
   signinValidationSchema,
   signupValidationSchema,
+  updateSelfValidationSchema,
   verifyOtpValidationSchema,
 } from '../validators/user.validator.js';
 const router = e.Router();
@@ -25,6 +27,7 @@ router.post('/users/signin', validator(signinValidationSchema), signin);
 router.post('/users/signout', authMiddleware, signout);
 router.get('/users/verify', verifyEmail);
 router.get('/users/self', authMiddleware, getSelf);
+router.post('/users/update-self', validator(updateSelfValidationSchema), updateSelf);
 router.get('/users/delete-self', authMiddleware, deleteSelf);
 router.post('/users/forget-password', validator(forgetPasswordValidationSchema), forgetPassword);
 router.post('/users/reset-password', validator(resetPasswordValidationSchema), resetPassword);
