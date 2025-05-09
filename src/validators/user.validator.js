@@ -22,11 +22,11 @@ const forgetPasswordValidationSchema = z.object({
 });
 
 const verifyOtpValidationSchema = z.object({
-  otp: z.number().length(6),
+  otp: z.number().min(6),
 });
 
 const resetPasswordValidationSchema = z.object({
-  otp: z.number().length(6),
+  otp: z.number().min(6),
   password: z
     .string()
     .min(8)
