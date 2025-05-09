@@ -1,13 +1,6 @@
 import Mailgen from 'mailgen';
 import nodemailer from 'nodemailer';
-import {
-  APP_URL,
-  MAIL_HOST,
-  MAIL_PASSWORD,
-  MAIL_PORT,
-  MAIL_USERNAME,
-  WHITELIST_DOMAINS,
-} from '../constants.js';
+import { APP_URL, MAIL_HOST, MAIL_PASSWORD, MAIL_PORT, MAIL_USERNAME } from '../constants.js';
 const sendMail = async (options) => {
   const mailGenerator = new Mailgen({
     theme: 'default',
@@ -72,8 +65,7 @@ const resetPasswordMail = (otp) => {
         instructions: 'To reset your password, please click here:',
         button: {
           color: '#22BC66',
-          text: 'Reset Password',
-          link: `${WHITELIST_DOMAINS}/api/v1/users/reset-password/${otp}`,
+          text: otp,
         },
       },
       outro: "Need help, or have questions? Just reply to this email, we'd love to help.",

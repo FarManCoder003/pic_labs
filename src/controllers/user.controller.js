@@ -73,4 +73,57 @@ const deleteSelf = asyncHandler(async (req, res) => {
   res.status(200).json(ApiSuccess.success('User deleted successfully'));
 });
 
-export { deleteSelf, getSelf, signin, signout, signup, verifyEmail };
+const forgetPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) throw ApiError.badRequest('Invalid credentials');
+  const otp = Math.floor(100000 + Math.random() * 900000);
+  user.forgetPasswordOtp = otp;
+  user.forgotPasswordExpire = Date.now() + 10 * 60 * 1000;
+  await user.save();
+  sendMail({
+    email,
+    subject: 'Password Reset',
+    mailTemplate: resetPasswordMail(otp),
+  });
+  res.status(200).json(ApiSuccess.success('User signed in successfully'));
+});
+
+const verifyOtp = asyncHandler(async (req, res) => {
+  const { otp } = req.body;
+  const user = await User.findOne({
+    forgetPasswordOtp: otp,
+    forgotPasswordExpire: { $gt: Date.now() },
+  });
+  if (!user) {
+    user.forgetPasswordOtp = null;
+    user.forgotPasswordExpire = null;
+    await user.save();
+    throw ApiError.badRequest('Invalid credentials');
+  }
+  return res.status(200).json(ApiSuccess.success('OTP verified successfully'));
+});
+
+const resetPassword = asyncHandler(async (req, res) => {
+  const { otp, password } = req.body;
+  const user = await User.findOne({
+    forgetPasswordOtp: otp,
+  });
+  user.password = password;
+  user.forgetPasswordOtp = null;
+  user.forgotPasswordExpire = null;
+  await user.save();
+  res.status(200).json(ApiSuccess.success('Password reset successfully'));
+});
+
+export {
+  deleteSelf,
+  forgetPassword,
+  getSelf,
+  resetPassword,
+  signin,
+  signout,
+  signup,
+  verifyEmail,
+  verifyOtp,
+};
