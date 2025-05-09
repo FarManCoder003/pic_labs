@@ -1,5 +1,6 @@
 import e from 'express';
 import {
+  changePassword,
   deleteSelf,
   forgetPassword,
   getSelf,
@@ -32,4 +33,5 @@ router.get('/users/delete-self', authMiddleware, deleteSelf);
 router.post('/users/forget-password', validator(forgetPasswordValidationSchema), forgetPassword);
 router.post('/users/reset-password', validator(resetPasswordValidationSchema), resetPassword);
 router.post('/users/verify-otp', validator(verifyOtpValidationSchema), verifyOtp);
+router.post('/users/change-password', authMiddleware, changePassword);
 export default router;

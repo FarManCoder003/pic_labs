@@ -145,7 +145,18 @@ const updateSelf = asyncHandler(async (req, res) => {
   res.status(200).json(ApiSuccess.success('User updated successfully', updatedUser));
 });
 
+const changePassword = asyncHandler(async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const user = req.user;
+  const isPasswordMatched = await user.comparePassword(oldPassword);
+  if (!isPasswordMatched) throw ApiError.badRequest('Invalid credentials');
+  user.password = newPassword;
+  await user.save();
+  res.status(200).json(ApiSuccess.success('Password changed successfully'));
+});
+
 export {
+  changePassword,
   deleteSelf,
   forgetPassword,
   getSelf,
