@@ -4,6 +4,8 @@ import {
   deleteSelf,
   forgetPassword,
   getSelf,
+  googleCallback,
+  googleSignin,
   resetPassword,
   signin,
   signout,
@@ -25,6 +27,8 @@ import {
 const router = e.Router();
 router.post('/users/signup', validator(signupValidationSchema), signup);
 router.post('/users/signin', validator(signinValidationSchema), signin);
+router.get('/users/google/signin', googleSignin);
+router.get('/users/google/callback', googleCallback);
 router.post('/users/signout', authMiddleware, signout);
 router.get('/users/verify', verifyEmail);
 router.get('/users/self', authMiddleware, getSelf);

@@ -1,5 +1,15 @@
 import jwt from 'jsonwebtoken';
-import { APP_URL, VERIFICATION_TOKEN_KEY } from '../constants.js';
+import {
+  APP_URL,
+  GOOGLE_ACCESS_TOKEN_URL,
+  GOOGLE_CALLBACK_URL,
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+  GOOGLE_OAUTH_SCOPES,
+  GOOGLE_OAUTH_URL,
+  GOOGLE_TOKEN_INFO_URL,
+  VERIFICATION_TOKEN_KEY,
+} from '../constants.js';
 import { User } from '../models/user.model.js';
 import ApiError from '../utils/apiError.js';
 import ApiSuccess from '../utils/apiSuccess.js';
@@ -155,11 +165,42 @@ const changePassword = asyncHandler(async (req, res) => {
   res.status(200).json(ApiSuccess.success('Password changed successfully'));
 });
 
+const googleSignin = asyncHandler(async (req, res) => {
+  const state = 'google';
+  const scopes = GOOGLE_OAUTH_SCOPES.join(' ');
+  const GOOGLE_OAUTH_CONSENT_SCREEN_URL = `${GOOGLE_OAUTH_URL}?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${GOOGLE_CALLBACK_URL}&access_type=offline&scope=${scopes}&response_type=code&state=${state}`;
+  res.redirect(GOOGLE_OAUTH_CONSENT_SCREEN_URL);
+});
+
+const googleCallback = asyncHandler(async (req, res) => {
+  const { code } = req.query;
+  const data = {
+    code,
+    client_id: GOOGLE_CLIENT_ID,
+    client_secret: GOOGLE_CLIENT_SECRET,
+    redirect_uri: GOOGLE_CALLBACK_URL,
+    grant_type: 'authorization_code',
+  };
+  const response = await fetch(GOOGLE_ACCESS_TOKEN_URL, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+  const access_token_data = await response.json();
+  const { id_token } = access_token_data;
+  const token_info_response = await fetch(`${GOOGLE_TOKEN_INFO_URL}?id_token=${id_token}`);
+  const token_info = await token_info_response.json();
+  res
+    .status(token_info_response.status)
+    .json(ApiSuccess.success('User signed in successfully', token_info));
+});
+
 export {
   changePassword,
   deleteSelf,
   forgetPassword,
   getSelf,
+  googleCallback,
+  googleSignin,
   resetPassword,
   signin,
   signout,
