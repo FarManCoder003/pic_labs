@@ -58,6 +58,11 @@ const userSchema = new Schema(
       enum: ['active', 'inactive'],
       default: 'active',
     },
+    accountType: {
+      type: String,
+      enum: ['email', 'google'],
+      default: 'email',
+    },
   },
   { timestamps: true }
 );

@@ -189,9 +189,28 @@ const googleCallback = asyncHandler(async (req, res) => {
   const { id_token } = access_token_data;
   const token_info_response = await fetch(`${GOOGLE_TOKEN_INFO_URL}?id_token=${id_token}`);
   const token_info = await token_info_response.json();
+  const createdUser = await User.findOneAndUpdate(
+    { email: token_info.email },
+    {
+      username: token_info.email,
+      email: token_info.email,
+      name: token_info.name,
+      emailVerified: token_info.email_verified,
+      avatar: {
+        url: token_info.picture,
+        public_id: token_info.sub,
+      },
+      accountType: 'google',
+    },
+    {
+      new: true,
+      upsert: true,
+    }
+  );
+  const user = await User.findById(createdUser._id).select('-password -__v -createdAt -updatedAt');
   res
     .status(token_info_response.status)
-    .json(ApiSuccess.success('User signed in successfully', token_info));
+    .json(ApiSuccess.success('User signed in successfully', user));
 });
 
 export {
