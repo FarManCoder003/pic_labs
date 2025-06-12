@@ -31,7 +31,7 @@ const signup = asyncHandler(async (req, res) => {
     subject: 'Email Verification',
     mailTemplate: verificationMail(user.username, verifyUrl),
   });
-  res.status(201).json(ApiSuccess.success('User created successfully', user));
+  return res.status(201).json(ApiSuccess.success('User created successfully', user));
 });
 
 const verifyEmail = asyncHandler(async (req, res) => {
@@ -44,7 +44,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
   if (user.emailVerified) throw ApiError.badRequest('User already verified');
   user.emailVerified = true;
   await user.save();
-  res.status(200).json(ApiSuccess.success('User verified successfully', user));
+  return res.status(200).json(ApiSuccess.success('User verified successfully', user));
 });
 
 const signin = asyncHandler(async (req, res) => {
@@ -67,7 +67,7 @@ const signin = asyncHandler(async (req, res) => {
 });
 
 const getSelf = asyncHandler(async (req, res) => {
-  res.status(200).json(ApiSuccess.success('User fetched successfully', req.user));
+  return res.status(200).json(ApiSuccess.success('User fetched successfully', req.user));
 });
 
 const signout = asyncHandler(async (req, res) => {
@@ -80,7 +80,7 @@ const signout = asyncHandler(async (req, res) => {
 
 const deleteSelf = asyncHandler(async (req, res) => {
   User.findByIdAndDelete(req.user._id);
-  res.status(200).json(ApiSuccess.success('User deleted successfully'));
+  return res.status(200).json(ApiSuccess.success('User deleted successfully'));
 });
 
 const forgetPassword = asyncHandler(async (req, res) => {
@@ -96,7 +96,7 @@ const forgetPassword = asyncHandler(async (req, res) => {
     subject: 'Password Reset',
     mailTemplate: resetPasswordMail(otp),
   });
-  res.status(200).json(ApiSuccess.success('User signed in successfully'));
+  return res.status(200).json(ApiSuccess.success('User signed in successfully'));
 });
 
 const verifyOtp = asyncHandler(async (req, res) => {
@@ -123,7 +123,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   user.forgetPasswordOtp = null;
   user.forgotPasswordExpire = null;
   await user.save();
-  res.status(200).json(ApiSuccess.success('Password reset successfully'));
+  return res.status(200).json(ApiSuccess.success('Password reset successfully'));
 });
 
 const updateSelf = asyncHandler(async (req, res) => {
@@ -152,7 +152,7 @@ const updateSelf = asyncHandler(async (req, res) => {
   const updatedUser = await User.findById(req.user._id).select(
     '-password -__v -createdAt -updatedAt'
   );
-  res.status(200).json(ApiSuccess.success('User updated successfully', updatedUser));
+  return res.status(200).json(ApiSuccess.success('User updated successfully', updatedUser));
 });
 
 const changePassword = asyncHandler(async (req, res) => {
@@ -162,7 +162,7 @@ const changePassword = asyncHandler(async (req, res) => {
   if (!isPasswordMatched) throw ApiError.badRequest('Invalid credentials');
   user.password = newPassword;
   await user.save();
-  res.status(200).json(ApiSuccess.success('Password changed successfully'));
+  return res.status(200).json(ApiSuccess.success('Password changed successfully'));
 });
 
 const googleSignin = asyncHandler(async (req, res) => {
