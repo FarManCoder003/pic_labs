@@ -28,11 +28,20 @@ const GOOGLE_OAUTH_SCOPES = [
   'https%3A//www.googleapis.com/auth/userinfo.email',
   'https%3A//www.googleapis.com/auth/userinfo.profile',
 ];
+const allowedExtensions = ['jpg', 'jpeg', 'png'];
+
+const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
+const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY;
+const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET;
 
 export {
   ACCESS_TOKEN_EXPIRES,
   ACCESS_TOKEN_KEY,
+  allowedExtensions,
   APP_URL,
+  CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET,
+  CLOUDINARY_CLOUD_NAME,
   GOOGLE_ACCESS_TOKEN_URL,
   GOOGLE_CALLBACK_URL,
   GOOGLE_CLIENT_ID,
@@ -51,6 +60,5 @@ export {
   REFRESH_TOKEN_KEY,
   VERIFICATION_TOKEN_EXPIRES,
   VERIFICATION_TOKEN_KEY,
-  WHITELIST_DOMAINS
+  WHITELIST_DOMAINS,
 };
-
