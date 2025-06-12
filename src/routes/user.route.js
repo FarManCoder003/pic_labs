@@ -1,5 +1,6 @@
 import e from 'express';
 import {
+  avatarUpload,
   changePassword,
   deleteSelf,
   forgetPassword,
@@ -15,6 +16,7 @@ import {
   verifyOtp,
 } from '../controllers/user.controller.js';
 import authMiddleware from '../middlewares/auth.middleware.js';
+import fileUpload from '../middlewares/fileUpload.middleware.js';
 import { validator } from '../middlewares/validator.middleware.js';
 import {
   forgetPasswordValidationSchema,
@@ -24,7 +26,9 @@ import {
   updateSelfValidationSchema,
   verifyOtpValidationSchema,
 } from '../validators/user.validator.js';
+
 const router = e.Router();
+
 router.post('/signup', validator(signupValidationSchema), signup);
 router.post('/signin', validator(signinValidationSchema), signin);
 router.get('/google/signin', googleSignin);
@@ -38,4 +42,6 @@ router.post('/forget-password', validator(forgetPasswordValidationSchema), forge
 router.post('/reset-password', validator(resetPasswordValidationSchema), resetPassword);
 router.post('/verify-otp', validator(verifyOtpValidationSchema), verifyOtp);
 router.post('/change-password', authMiddleware, changePassword);
+router.post('/avatar', authMiddleware, fileUpload.single('avatar'), avatarUpload);
+
 export default router;

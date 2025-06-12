@@ -14,6 +14,7 @@ import { User } from '../models/user.model.js';
 import ApiError from '../utils/apiError.js';
 import ApiSuccess from '../utils/apiSuccess.js';
 import asyncHandler from '../utils/asyncHandler.js';
+import { cloudinaryUpload } from '../utils/cloudinary.js';
 import { sendMail, verificationMail } from '../utils/mail.js';
 
 const signup = asyncHandler(async (req, res) => {
@@ -59,7 +60,7 @@ const signin = asyncHandler(async (req, res) => {
   const accessToken = user.generateAccessToken();
   const refreshToken = user.generateRefreshToken();
   const options = { httpOnly: true, secure: true, samesite: 'lax' };
-  res
+  return res
     .status(200)
     .cookie('accessToken', accessToken, { ...options, maxAge: 24 * 60 * 60 * 1000 })
     .cookie('refreshToken', refreshToken, { ...options, maxAge: 30 * 24 * 60 * 60 * 1000 })
@@ -71,7 +72,7 @@ const getSelf = asyncHandler(async (req, res) => {
 });
 
 const signout = asyncHandler(async (req, res) => {
-  res
+  return res
     .status(200)
     .clearCookie('accessToken')
     .clearCookie('refreshToken')
@@ -208,12 +209,31 @@ const googleCallback = asyncHandler(async (req, res) => {
     }
   );
   const user = await User.findById(createdUser._id).select('-password -__v -createdAt -updatedAt');
-  res
+  return res
     .status(token_info_response.status)
     .json(ApiSuccess.success('User signed in successfully', user));
 });
 
+const avatarUpload = asyncHandler(async (req, res) => {
+  const avatar = req.file;
+  const user = req.user;
+  const cloudinaryResult = await cloudinaryUpload(avatar.path, {
+    folder: 'avatars',
+    public_id: req.user._id,
+    unique_filename: true,
+    overwrite: true,
+    transformation: [{ width: 300, height: 300, crop: 'fill', gravity: 'face', radius: 'max' }],
+  });
+  user.avatar = {
+    url: cloudinaryResult.secure_url,
+    public_id: cloudinaryResult.public_id,
+  };
+  await user.save();
+  return res.status(200).json(ApiSuccess.success('Avatar uploaded successfully', user));
+});
+
 export {
+  avatarUpload,
   changePassword,
   deleteSelf,
   forgetPassword,

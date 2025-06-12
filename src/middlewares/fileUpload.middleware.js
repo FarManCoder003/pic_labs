@@ -3,7 +3,7 @@ import path from 'path';
 import { allowedExtensions } from '../constants.js';
 
 const fileFilter = (req, file, cb) => {
-  if (allowedExtensions.includes(file.originalname)) {
+  if (allowedExtensions.includes(path.extname(file.originalname))) {
     cb(null, true);
   } else {
     cb(new Error('Invalid file type. Only jpg, jpeg, and png files are allowed.'), false);
@@ -20,5 +20,9 @@ const storage = multer.diskStorage({
   },
 });
 
-const fileUpload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 }, fileFilter });
+const fileUpload = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
 export default fileUpload;
