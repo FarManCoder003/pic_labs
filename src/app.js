@@ -5,16 +5,12 @@ import { limiter, speedLimiter, WHITELIST_DOMAINS } from './constants.js';
 import errorHandler from './middlewares/errorhandler.middleware.js';
 import healthCheckRouter from './routes/healthCheck.route.js';
 import userRouter from './routes/user.route.js';
+
 const app = e();
 app.use(e.json());
 app.use(e.urlencoded({ extended: true }));
 app.use(e.static('public'));
-app.use(
-  cors({
-    origin: WHITELIST_DOMAINS,
-    credentials: true,
-  })
-);
+app.use(cors({ origin: WHITELIST_DOMAINS, credentials: true }));
 app.use(cookieParser());
 app.use(speedLimiter);
 app.use(limiter);
@@ -22,4 +18,3 @@ app.use('/api/v1', healthCheckRouter);
 app.use('/api/v1/users', userRouter);
 app.use(errorHandler);
 export { app };
-
