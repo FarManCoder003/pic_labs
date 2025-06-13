@@ -78,6 +78,13 @@ const commonPasswords = [
   'pandapandapanda1234',
   'pandapandapanda12345',
 ];
+const adminDetails = {
+  username: 'admin',
+  name: 'admin',
+  email: 'admin@admin.com',
+  password: 'admin',
+  emailVerified: true,
+};
 const NODE_ENV = process.env.NODE_ENV ?? 'development';
 const PORT = process.env.PORT ?? 8000;
 const APP_URL = NODE_ENV === 'production' ? process.env.APP_URL : `http://localhost:${PORT}`;
@@ -124,6 +131,7 @@ const speedLimiter = slowDown({
 export {
   ACCESS_TOKEN_EXPIRES,
   ACCESS_TOKEN_KEY,
+  adminDetails,
   allowedExtensions,
   APP_URL,
   CLOUDINARY_API_KEY,

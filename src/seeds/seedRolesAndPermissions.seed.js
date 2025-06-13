@@ -1,7 +1,5 @@
-import { dbConnect } from '../db/index.js';
 import { Permission } from '../models/permission.model.js';
 import { Role } from '../models/role.model.js';
-dbConnect();
 
 const permissionList = [
   { name: 'manage_users', description: 'Manage all users' },
@@ -63,7 +61,7 @@ const roleList = [
   },
 ];
 
-const seed = async () => {
+export const roleAndPermissionSeeder = async () => {
   try {
     await Permission.deleteMany({});
     await Role.deleteMany({});
@@ -82,11 +80,7 @@ const seed = async () => {
       });
     }
     console.log('Roles and permissions seeded successfully');
-    process.exit();
   } catch (error) {
     console.log('Error seeding roles and permissions', error);
-    process.exit(1);
   }
 };
-
-seed();

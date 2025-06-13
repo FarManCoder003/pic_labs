@@ -63,10 +63,10 @@ const userSchema = new Schema(
       enum: ['email', 'google'],
       default: 'email',
     },
-    role: {
+    roles: {
       type: Schema.Types.ObjectId,
       ref: 'Role',
-    }
+    },
   },
   { timestamps: true }
 );
@@ -96,6 +96,10 @@ userSchema.methods.generateVerificationToken = function () {
   return jwt.sign({ _id: this._id, email: this.email }, VERIFICATION_TOKEN_KEY, {
     expiresIn: VERIFICATION_TOKEN_EXPIRES,
   });
+};
+
+userSchema.methods.getRoles = async function () {
+  return await this.populate('roles');
 };
 
 export const User = mongoose.models.User || mongoose.model('User', userSchema);
