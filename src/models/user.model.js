@@ -63,6 +63,10 @@ const userSchema = new Schema(
       enum: ['email', 'google'],
       default: 'email',
     },
+    role: {
+      type: Schema.Types.ObjectId,
+      ref: 'Role',
+    }
   },
   { timestamps: true }
 );

@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
+    "seed": "node ./src/seeds/seedRolesAndPermissions.js",
     "start": "npm index.js"
   },
   "keywords": [],
