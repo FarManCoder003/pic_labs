@@ -1,7 +1,7 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import e from 'express';
-import { WHITELIST_DOMAINS } from './constants.js';
+import { limiter, speedLimiter, WHITELIST_DOMAINS } from './constants.js';
 import errorHandler from './middlewares/errorhandler.middleware.js';
 import healthCheckRouter from './routes/healthCheck.route.js';
 import userRouter from './routes/user.route.js';
@@ -16,6 +16,8 @@ app.use(
   })
 );
 app.use(cookieParser());
+app.use(speedLimiter);
+app.use(limiter);
 app.use('/api/v1', healthCheckRouter);
 app.use('/api/v1/users', userRouter);
 app.use(errorHandler);

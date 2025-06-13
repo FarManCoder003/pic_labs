@@ -1,7 +1,10 @@
 import dotenv from 'dotenv';
+import rateLimit from 'express-rate-limit';
+import slowDown from 'express-slow-down';
 dotenv.config({
   path: './.env',
 });
+
 const commonPasswords = [
   'password',
   '123456',
@@ -101,11 +104,23 @@ const GOOGLE_OAUTH_SCOPES = [
   'https%3A//www.googleapis.com/auth/userinfo.profile',
 ];
 const allowedExtensions = ['.jpg', '.jpeg', '.png'];
-
 const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY;
 const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET;
-
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: (req) => (req.user ? 100 : 10),
+  message: { error: 'Too many requests, please try again later' },
+  legacyHeaders: false,
+  standardHeaders: true,
+  keyGenerator: (req) => req.ip,
+  max: 5,
+});
+const speedLimiter = slowDown({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  delayAfter: 1,
+  delayMs: () => 2000,
+});
 export {
   ACCESS_TOKEN_EXPIRES,
   ACCESS_TOKEN_KEY,
@@ -122,6 +137,7 @@ export {
   GOOGLE_OAUTH_SCOPES,
   GOOGLE_OAUTH_URL,
   GOOGLE_TOKEN_INFO_URL,
+  limiter,
   MAIL_HOST,
   MAIL_PASSWORD,
   MAIL_PORT,
@@ -131,6 +147,7 @@ export {
   PORT,
   REFRESH_TOKEN_EXPIRES,
   REFRESH_TOKEN_KEY,
+  speedLimiter,
   VERIFICATION_TOKEN_EXPIRES,
   VERIFICATION_TOKEN_KEY,
   WHITELIST_DOMAINS,
