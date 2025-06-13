@@ -8,6 +8,7 @@ import {
   googleCallback,
   googleSignin,
   resetPassword,
+  roleUpdate,
   signin,
   signout,
   signup,
@@ -43,5 +44,6 @@ router.post('/reset-password', validator(resetPasswordValidationSchema), resetPa
 router.post('/verify-otp', validator(verifyOtpValidationSchema), verifyOtp);
 router.post('/change-password', authMiddleware, changePassword);
 router.post('/avatar', authMiddleware, fileUpload.single('avatar'), avatarUpload);
+router.post('/role-update', authMiddleware, roleUpdate);
 
 export default router;

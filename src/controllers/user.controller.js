@@ -232,6 +232,14 @@ const avatarUpload = asyncHandler(async (req, res) => {
   return res.status(200).json(ApiSuccess.success('Avatar uploaded successfully', user));
 });
 
+const roleUpdate = asyncHandler(async (req, res) => {
+  const { role } = req.body;
+  const user = req.user;
+  user.role = role;
+  await user.save();
+  return res.status(200).json(ApiSuccess.success('Role updated successfully', user));
+});
+
 export {
   avatarUpload,
   changePassword,
@@ -241,6 +249,7 @@ export {
   googleCallback,
   googleSignin,
   resetPassword,
+  roleUpdate,
   signin,
   signout,
   signup,
